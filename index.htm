@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wahil Mertens - Portfolio GEII</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Animations -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
     <script>
         tailwind.config = {
@@ -21,7 +26,8 @@
                         accent: '#10b981',    
                         dark: '#0a0a0a',      
                         card: '#171717',      
-                        surface: '#262626'    
+                        surface: '#262626',
+                        warm: '#f59e0b'
                     }
                 }
             }
@@ -31,7 +37,7 @@
         ::-webkit-scrollbar { width: 10px; }
         ::-webkit-scrollbar-track { background: #0a0a0a; }
         ::-webkit-scrollbar-thumb {
-            background: linear-gradient(to bottom, #1d4ed8, #3b82f6);
+            background: linear-gradient(to bottom, #f59e0b, #3b82f6);
             border-radius: 5px;
             border: 2px solid #0a0a0a;
         }
@@ -40,21 +46,33 @@
             backdrop-filter: blur(16px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .tech-badge {
-            padding: 6px 12px;
-            background-color: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 6px;
+
+        /* --- STYLES BADGES INDIVIDUELS (ETIQUETTES) --- */
+        .skill-tag {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            margin: 0.25rem;
+            border-radius: 0.5rem;
             font-size: 0.85rem;
-            font-family: "JetBrains Mono", monospace;
-            color: #94a3b8;
-            transition: all 0.2s;
+            font-family: 'JetBrains Mono', monospace;
+            border: 1px solid;
+            transition: all 0.3s ease;
+            background: rgba(0,0,0,0.3);
+            cursor: default;
         }
-        .group:hover .tech-badge {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white;
-            border-color: rgba(255, 255, 255, 0.2);
-        }
+
+        /* Couleurs et Surbrillance */
+        .skill-tag-blue { border-color: rgba(59,130,246,0.3); color: #60a5fa; }
+        .skill-tag-blue:hover { background: rgba(59,130,246,0.15); box-shadow: 0 0 15px rgba(59,130,246,0.4); border-color: #3b82f6; transform: translateY(-2px); }
+
+        .skill-tag-purple { border-color: rgba(168,85,247,0.3); color: #c084fc; }
+        .skill-tag-purple:hover { background: rgba(168,85,247,0.15); box-shadow: 0 0 15px rgba(168,85,247,0.4); border-color: #a855f7; transform: translateY(-2px); }
+
+        .skill-tag-yellow { border-color: rgba(234,179,8,0.3); color: #facc15; }
+        .skill-tag-yellow:hover { background: rgba(234,179,8,0.15); box-shadow: 0 0 15px rgba(234,179,8,0.4); border-color: #eab308; transform: translateY(-2px); }
+
+        .skill-tag-red { border-color: rgba(239,68,68,0.3); color: #f87171; }
+        .skill-tag-red:hover { background: rgba(239,68,68,0.15); box-shadow: 0 0 15px rgba(239,68,68,0.4); border-color: #ef4444; transform: translateY(-2px); }
         
         /* Modal Styles */
         .modal {
@@ -67,177 +85,180 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95);
         }
-        .modal.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .modal-content {
-            transform: scale(0.95);
-            transition: transform 0.3s ease-out;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        .modal.active .modal-content {
-            transform: scale(1);
-        }
+        .modal.active { opacity: 1; pointer-events: auto; }
+        .modal-content { transform: scale(0.95); transition: transform 0.3s ease-out; max-height: 90vh; overflow-y: auto; }
+        .modal.active .modal-content { transform: scale(1); }
         
-        /* TIMELINE ALIGN�E */
+        /* TIMELINE ALIGNEMENT CORRIGÉ */
         .timeline-container { position: relative; max-width: 1000px; margin: 0 auto; padding: 40px 0; }
+        /* La ligne centrale */
         .timeline-line {
             position: absolute; left: 50%; top: 0; bottom: 0; width: 4px;
-            background: linear-gradient(to bottom, #333 0%, #fff 50%, #333 100%);
+            background: linear-gradient(to bottom, #222 0%, #fff 50%, #222 100%);
             transform: translateX(-50%);
             border-radius: 2px;
+            z-index: 0;
         }
-        .timeline-item { position: relative; width: 50%; padding-bottom: 60px; }
+        .timeline-item { position: relative; width: 50%; padding-bottom: 60px; z-index: 10; }
         
-        .timeline-item.left { left: 0; padding-right: 60px; text-align: right; }
-        .timeline-item.right { left: 50%; padding-left: 60px; text-align: left; }
+        /* Espacement pour ne pas toucher la ligne */
+        .timeline-item.left { left: 0; padding-right: 50px; text-align: right; }
+        .timeline-item.right { left: 50%; padding-left: 50px; text-align: left; }
         
+        /* Le point - Positionné par rapport au bord de l'item qui touche la ligne */
         .timeline-dot {
-            position: absolute; top: 30px; width: 24px; height: 24px;
+            position: absolute; top: 24px; width: 24px; height: 24px;
             background: #000; border-width: 4px; border-style: solid; border-radius: 50%;
             z-index: 10;
-            left: 50%; 
-            transform: translateX(-50%); 
         }
 
-        .timeline-item.left .timeline-dot { right: -12px; left: auto; transform: none; }
-        .timeline-item.right .timeline-dot { left: -12px; transform: none; }
+        /* Si l'item est à gauche, le point est à droite (-12px pour centrer sur la ligne de 4px) */
+        .timeline-item.left .timeline-dot { right: -12px; }
+        /* Si l'item est à droite, le point est à gauche */
+        .timeline-item.right .timeline-dot { left: -12px; }
+
+        .timeline-item.left .card-content { flex-direction: row-reverse; }
+        .timeline-item.right .card-content { flex-direction: row; }
+
+        /* Accordion pour Scolarité */
+        .accordion-content {
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0, 1, 0, 1), padding 0.5s ease;
+        }
+        .accordion-content.open { max-height: 1000px; padding-top: 1.5rem; padding-bottom: 1.5rem; }
+        .chevron { transition: transform 0.3s ease; }
+        .chevron.rotate { transform: rotate(180deg); }
 
         @media (max-width: 768px) {
             .timeline-line { left: 30px; transform: none; }
             .timeline-item { width: 100%; left: 0; padding-left: 80px; padding-right: 20px; text-align: left; }
             .timeline-item.left, .timeline-item.right { text-align: left; }
-            .timeline-item.left .timeline-dot, .timeline-item.right .timeline-dot { left: 18px; right: auto; transform: none; }
-            .timeline-item.left .card-content { flex-direction: row; text-align: left; justify-content: flex-start !important; }
+            
+            /* Sur mobile, la ligne est à gauche, donc tous les points sont à gauche */
+            .timeline-dot { left: 18px; right: auto; } /* 30px (ligne) - 12px (moitié point) = 18px */
+            
+            .timeline-item.left .card-content { flex-direction: row; justify-content: flex-start !important; }
+            .timeline-item.left .logo-box { order: -1; margin-right: 1rem; margin-left: 0; }
         }
     </style>
 </head>
-<body class="bg-dark text-gray-300 font-sans antialiased selection:bg-primary selection:text-white">
+<body class="bg-dark text-gray-300 font-sans antialiased selection:bg-orange-500/30 selection:text-white relative">
 
+    <!-- AMBIANCE CHAUDE (Renforcée) -->
+    <div class="fixed top-0 right-0 w-[800px] h-[800px] bg-orange-600/15 rounded-full blur-[180px] -z-10 pointer-events-none"></div>
+    <div class="fixed bottom-0 left-0 w-[600px] h-[600px] bg-blue-900/15 rounded-full blur-[150px] -z-10 pointer-events-none"></div>
+
+    <!-- Navigation -->
     <nav class="fixed w-full z-50 glass-nav transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
                 <div class="flex items-center gap-3 group cursor-pointer">
-                    <div class="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors duration-300">
-                        <i data-lucide="cpu" class="text-primary w-6 h-6"></i>
-                    </div>
                     <span class="text-xl font-bold tracking-tight text-white group-hover:text-primary transition-colors duration-300">
-                        Wahil<span class="text-primary">.Mertens</span>
+                        PORTFOLIO
                     </span>
                 </div>
                 
                 <div class="hidden md:flex space-x-8">
-                    <a href="#projets" class="hover:text-primary transition text-sm font-medium">Projets</a>
-                    <a href="#langues" class="hover:text-primary transition text-sm font-medium">Langues</a>
-                    <a href="#parcours" class="hover:text-primary transition text-sm font-medium">Parcours</a>
-                    <a href="#competences" class="hover:text-primary transition text-sm font-medium">Comp&eacute;tences</a>
-                    <a href="#contact" class="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition text-sm font-medium shadow-lg shadow-blue-900/20">Contact</a>
+                    <a href="#education" class="hover:text-white transition text-sm font-medium">Scolarit&eacute;</a>
+                    <a href="#parcours" class="hover:text-white transition text-sm font-medium">Parcours</a>
+                    <a href="#projets" class="hover:text-white transition text-sm font-medium">Projets</a>
+                    <a href="#langues" class="hover:text-white transition text-sm font-medium">Langues</a>
+                    <a href="#competences" class="hover:text-white transition text-sm font-medium">Comp&eacute;tences</a>
+                    <a href="#contact" class="bg-white text-black px-4 py-2 rounded-lg transition text-sm font-bold hover:bg-gray-200">Contact</a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <section class="min-h-screen flex items-center justify-center pt-16 relative overflow-hidden bg-black">
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center pt-16 relative overflow-hidden">
         <div class="absolute inset-0 z-0">
-            <img src="https://images.unsplash.com/photo-1592659762303-90081d34b277?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover opacity-30 select-none">
-            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent"></div>
+            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover opacity-20 select-none">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/90 to-transparent"></div>
         </div>
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-            <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight tracking-tight drop-shadow-2xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center" data-aos="fade-up">
+            <h1 class="text-5xl md:text-8xl font-bold text-white mb-6 leading-tight tracking-tight drop-shadow-2xl">
                 Wahil Mertens
             </h1>
-            <h2 class="text-2xl md:text-3xl text-gray-300 mb-8 font-light drop-shadow-lg">
-                &Eacute;tudiant en <span class="text-primary font-semibold">G&eacute;nie &Eacute;lectrique</span> & <span class="text-accent font-semibold">Syst&egrave;mes Embarqu&eacute;s</span>
+            <h2 class="text-2xl md:text-3xl text-gray-300 mb-2 font-light drop-shadow-lg">
+                &Eacute;tudiant BUT GEII
+            </h2>
+            <h3 class="text-xl md:text-2xl text-primary font-medium mb-10">
+                Parcours Electronique et Syst&egrave;me Embarqu&eacute;s (ESE)
+            </h3>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-6 mt-8">
+                <!-- Bouton Me Contacter (Remplace LinkedIn) -->
+                <a href="#contact" class="flex-1 max-w-xs group bg-primary hover:bg-blue-600 border border-transparent px-6 py-4 rounded-2xl flex items-center gap-4 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/30 cursor-pointer">
+                    <div class="p-2 bg-white/20 rounded-xl text-white group-hover:bg-white/30 transition"><i data-lucide="mail" class="w-6 h-6"></i></div>
+                    <div class="text-left"><div class="font-bold text-white text-lg">Me Contacter</div><div class="text-sm text-blue-100">Email & T&eacute;l</div></div>
+                </a>
+                
+                <!-- Bouton CV -->
+                <a href="CV_Wahil_MERTENS.pdf" target="_blank" class="flex-1 max-w-xs group bg-card/80 backdrop-blur border border-white/10 hover:border-red-500 px-6 py-4 rounded-2xl flex items-center gap-4 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-red-500/20 cursor-pointer">
+                    <div class="p-3 bg-red-500/20 rounded-xl text-red-500 group-hover:text-white group-hover:bg-red-500 transition"><i data-lucide="file-text" class="w-6 h-6"></i></div>
+                    <div class="text-left"><div class="font-bold text-white text-lg">Mon CV</div><div class="text-sm text-gray-400 group-hover:text-white/80">T&eacute;l&eacute;charger PDF</div></div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 1 : PARCOURS SCOLAIRE (ACCORDÉON DARK) -->
+    <section id="education" class="py-20 border-t border-zinc-800 bg-black">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-white mb-16 text-center">
+                <i data-lucide="graduation-cap" class="inline-block w-8 h-8 mr-2 text-primary"></i> Parcours Scolaire
             </h2>
             
-            <p class="max-w-2xl mx-auto text-lg text-gray-400 mb-10 leading-relaxed drop-shadow-md">
-                Passionn&eacute; par l'automatisme, l'IoT et les syst&egrave;mes embarqu&eacute;s. Je transforme des concepts th&eacute;oriques en syst&egrave;mes fonctionnels.
-            </p>
-
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="#contact" class="bg-primary hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition flex items-center justify-center gap-2 border border-transparent shadow-lg shadow-blue-900/30 backdrop-blur-sm hover:scale-105 duration-200">
-                    <i data-lucide="mail" class="w-5 h-5"></i> Me contacter
-                </a>
-                <a href="CV_Wahil_MERTENS.pdf" target="_blank" class="bg-zinc-800/80 backdrop-blur-md border border-zinc-600 hover:border-accent hover:text-accent text-gray-300 px-8 py-3 rounded-lg font-semibold transition flex items-center justify-center gap-2 hover:scale-105 duration-200">
-                    <i data-lucide="download" class="w-5 h-5"></i> Mon CV
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <section id="projets" class="py-20 bg-zinc-900/30 border-y border-zinc-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-white mb-12 flex items-center gap-2">
-                <i data-lucide="folder-kanban" class="text-primary w-8 h-8"></i> Projets Acad&eacute;miques
-            </h2>
-
-            <div class="mb-16">
-                <h3 class="text-2xl font-bold text-white mb-8 border-l-4 border-primary pl-4">Projets 2&egrave;me Ann&eacute;e (BUT 2)</h3>
-                <div class="grid md:grid-cols-2 gap-8">
-                    <div class="bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 hover:border-primary/50 hover:shadow-2xl transition group flex flex-col">
-                        <div class="h-56 bg-zinc-800 relative overflow-hidden">
-                            <img src="images/image_SAE_Lorawan.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="LoRaWAN" onerror="this.src='https://via.placeholder.com/600x400?text=Image+Projet'">
-                            <div class="absolute top-4 right-4 bg-black/70 px-3 py-1 rounded text-xs font-bold text-white border border-white/20">SA&Eacute; 4.02</div>
-                        </div>
-                        <div class="p-6 flex-grow flex flex-col">
-                            <h3 class="text-xl font-bold text-white group-hover:text-primary transition mb-2">Station M&eacute;t&eacute;o IoT LoRaWAN</h3>
-                            <p class="text-gray-400 text-sm mb-4">Syst&egrave;me autonome de mesure (T�/Humidit&eacute;) avec transmission longue port&eacute;e.</p>
-                            <div class="mt-auto">
-                                <div class="flex gap-2 flex-wrap mb-4">
-                                    <span class="tech-badge">KiCad</span><span class="tech-badge">SHT31</span><span class="tech-badge">LoRa</span>
-                                </div>
-                                <button class="w-full py-2 bg-blue-900/30 text-blue-300 border border-blue-800 rounded-lg hover:bg-blue-800/50 transition text-sm font-medium flex items-center justify-center gap-2" onclick="openModal('modal-lora')">
-                                    <i data-lucide="eye" class="w-4 h-4"></i> D&eacute;tails Techniques
-                                </button>
+            <div class="space-y-6">
+                <!-- BUT GEII -->
+                <div class="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden cursor-pointer group" onclick="toggleSection('edu-but', 'icon-but')">
+                    <div class="p-6 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                             <!-- LOGO IUT -->
+                            <img src="images/logo-iut-creteil.jpg" class="w-14 h-14 bg-white rounded-lg p-1 object-contain" alt="IUT" onerror="this.style.display='none'">
+                            <div>
+                                <h3 class="text-xl font-bold text-white group-hover:text-primary transition">BUT GEII</h3>
+                                <p class="text-gray-400 text-sm">IUT Cr&eacute;teil-Vitry (UPEC) | <span class="text-primary">2023 - 2026</span></p>
                             </div>
+                        </div>
+                        <i data-lucide="chevron-down" id="icon-but" class="w-6 h-6 text-gray-500 transition-transform"></i>
+                    </div>
+                    <div id="edu-but" class="accordion-content bg-black/30 border-t border-zinc-800 px-6">
+                        <div class="py-4 text-gray-400 text-sm">
+                            <p class="mb-2">G&eacute;nie &Eacute;lectrique et Informatique Industrielle.</p>
+                            <ul class="list-disc list-inside space-y-1 text-gray-500">
+                                <li>Parcours Automatisme et Syst&egrave;mes Embarqu&eacute;s.</li>
+                                <li>Projets techniques et stages professionnalisants.</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div>
-                <h3 class="text-2xl font-bold text-white mb-8 border-l-4 border-accent pl-4">Projets 1&egrave;re Ann&eacute;e (BUT 1)</h3>
-                <div class="grid md:grid-cols-2 gap-8">
-                    <div class="bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 hover:border-green-500/50 hover:shadow-2xl transition group flex flex-col">
-                        <div class="h-56 bg-zinc-800 relative overflow-hidden">
-                            <img src="images/image-PID-Proteus.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="Oscillo" onerror="this.src='https://via.placeholder.com/600x400?text=Image+Projet'">
-                            <div class="absolute top-4 right-4 bg-black/70 px-3 py-1 rounded text-xs font-bold text-white border border-white/20">SA&Eacute; 3.01</div>
-                        </div>
-                        <div class="p-6 flex-grow flex flex-col">
-                            <h3 class="text-xl font-bold text-white group-hover:text-green-400 transition mb-2">Oscilloscope Num&eacute;rique</h3>
-                            <p class="text-gray-400 text-sm mb-4">Cha&icirc;ne d'acquisition analogique et traitement num&eacute;rique sur STM32.</p>
-                            <div class="mt-auto">
-                                <div class="flex gap-2 flex-wrap mb-4">
-                                    <span class="tech-badge">Proteus</span><span class="tech-badge">AOP</span><span class="tech-badge">C</span>
-                                </div>
-                                <button class="w-full py-2 bg-green-900/30 text-green-300 border border-green-800 rounded-lg hover:bg-green-800/50 transition text-sm font-medium flex items-center justify-center gap-2" onclick="openModal('modal-oscillo')">
-                                    <i data-lucide="eye" class="w-4 h-4"></i> D&eacute;tails Techniques
-                                </button>
+                <!-- LICENCE PHYSIQUE (Ex Bac) -->
+                <div class="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden cursor-pointer group" onclick="toggleSection('edu-licence', 'icon-licence')">
+                    <div class="p-6 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <!-- LOGO UPEC -->
+                            <img src="images/logo-upec.jpg" class="w-14 h-14 bg-white rounded-lg p-1 object-contain" alt="UPEC" onerror="this.style.display='none'">
+                            <div>
+                                <h3 class="text-xl font-bold text-white group-hover:text-primary transition">Licence Physique</h3>
+                                <p class="text-gray-400 text-sm">UPEC (Paris-Est Cr&eacute;teil) | <span class="text-primary">2022 - 2023</span></p>
                             </div>
                         </div>
+                        <i data-lucide="chevron-down" id="icon-licence" class="w-6 h-6 text-gray-500 transition-transform"></i>
                     </div>
-
-                    <div class="bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 hover:border-orange-500/50 hover:shadow-2xl transition group flex flex-col">
-                        <div class="h-56 bg-zinc-800 relative overflow-hidden flex items-center justify-center">
-                             <i data-lucide="bot" class="w-20 h-20 text-zinc-600 group-hover:text-orange-500 transition transform group-hover:scale-110"></i>
-                             <div class="absolute top-4 right-4 bg-black/70 px-3 py-1 rounded text-xs font-bold text-white border border-white/20">SA&Eacute; 2.01</div>
-                        </div>
-                        <div class="p-6 flex-grow flex flex-col">
-                            <h3 class="text-xl font-bold text-white group-hover:text-orange-400 transition mb-2">Robot Mobile Autonome</h3>
-                            <p class="text-gray-400 text-sm mb-4">Conception d'un robot &eacute;viteur d'obstacles (Arduino).</p>
-                            <div class="mt-auto">
-                                <div class="flex gap-2 flex-wrap mb-4">
-                                    <span class="tech-badge">Arduino</span><span class="tech-badge">C++</span>
-                                </div>
-                                <button class="w-full py-2 bg-orange-900/30 text-orange-300 border border-orange-800 rounded-lg hover:bg-orange-800/50 transition text-sm font-medium flex items-center justify-center gap-2">
-                                    <i data-lucide="eye" class="w-4 h-4"></i> D&eacute;tails Techniques
-                                </button>
-                            </div>
+                    <div id="edu-licence" class="accordion-content bg-black/30 border-t border-zinc-800 px-6">
+                        <div class="py-4 text-gray-400 text-sm">
+                            <p>1&egrave;re ann&eacute;e de Licence Sciences pour l'Ing&eacute;nieur.</p>
+                            <ul class="list-disc list-inside space-y-1 text-gray-500">
+                                <li>M&eacute;canique du point.</li>
+                                <li>Thermodynamique.</li>
+                                <li>Math&eacute;matiques appliqu&eacute;es.</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -245,38 +266,8 @@
         </div>
     </section>
 
-    <section id="langues" class="py-20 bg-black border-t border-zinc-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-3xl font-bold text-white mb-16 flex items-center justify-center gap-3">
-                <i data-lucide="languages" class="text-primary w-8 h-8"></i> Langues Ma&icirc;tris&eacute;es
-            </h2>
-            <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-                <div class="flex items-center gap-4 bg-zinc-900/50 px-5 py-4 rounded-xl border border-zinc-800 hover:border-blue-500 transition hover:-translate-y-1">
-                    <img src="https://flagcdn.com/w80/fr.png" alt="France" class="w-12 h-auto rounded shadow-sm">
-                    <div class="text-left">
-                        <div class="font-bold text-white text-lg">Fran&ccedil;ais</div>
-                        <div class="text-sm text-gray-400">Langue maternelle</div>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4 bg-zinc-900/50 px-5 py-4 rounded-xl border border-zinc-800 hover:border-blue-500 transition hover:-translate-y-1">
-                    <img src="https://flagcdn.com/w80/gb.png" alt="UK" class="w-12 h-auto rounded shadow-sm">
-                    <div class="text-left">
-                        <div class="font-bold text-white text-lg">Anglais</div>
-                        <div class="text-sm text-gray-400">B2 Professionnel</div>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4 bg-zinc-900/50 px-5 py-4 rounded-xl border border-zinc-800 hover:border-blue-500 transition hover:-translate-y-1">
-                    <img src="https://flagcdn.com/w80/es.png" alt="Spain" class="w-12 h-auto rounded shadow-sm">
-                    <div class="text-left">
-                        <div class="font-bold text-white text-lg">Espagnol</div>
-                        <div class="text-sm text-gray-400">B1 Interm&eacute;diaire</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="parcours" class="py-20 bg-zinc-900/20 border-t border-zinc-800">
+    <!-- SECTION 2 : PARCOURS PROFESSIONNEL (TIMELINE, TEXTE DIRECT, AVEC LOGOS) -->
+    <section id="parcours" class="py-20 bg-zinc-900/10 border-t border-zinc-800">
         <div class="max-w-6xl mx-auto px-4">
             <h2 class="text-3xl font-bold text-white mb-20 text-center">
                 <i data-lucide="briefcase" class="inline-block w-8 h-8 mr-2 text-primary"></i> Parcours Professionnel
@@ -285,17 +276,20 @@
             <div class="timeline-container">
                 <div class="timeline-line"></div>
 
-                <div class="timeline-item right group">
-                    <div class="timeline-dot" style="border-color: #06b6d4;"></div>
+                <!-- IPN (Cyan) -->
+                <div class="timeline-item right group" data-aos="fade-left">
+                    <div class="timeline-dot" style="border-color: #06b6d4; background-color: #000;"></div>
                     <div class="bg-zinc-900 p-6 rounded-2xl border border-zinc-800 hover:border-cyan-500 transition hover:shadow-lg hover:shadow-cyan-500/20" onclick="openModal('modal-ipn-stage')">
-                        <div class="flex items-center gap-4 mb-4">
-                            <img src="images/logo-upec.jpg" class="w-14 h-14 rounded-lg bg-white p-1 object-contain" alt="IPN" onerror="this.style.display='none'">
+                        <div class="flex items-center gap-4 mb-4 card-content">
+                            <div class="w-14 h-14 bg-white rounded-lg p-1 flex items-center justify-center shrink-0 logo-box">
+                                <img src="images/logo-upec.jpg" class="w-full h-full object-contain" alt="IPN" onerror="this.style.display='none'">
+                            </div>
                             <div>
                                 <h3 class="text-lg font-bold text-white group-hover:text-cyan-400 transition">Stagiaire Syst&egrave;mes Auto.</h3>
                                 <p class="text-cyan-500 font-medium">IPN Mexique</p>
                             </div>
                         </div>
-                        <span class="text-xs text-gray-500 font-mono block mb-4 border-l-2 border-cyan-500/50 pl-3">Avril - Juin 2025</span>
+                        <span class="text-xs text-gray-500 font-mono block mb-4 pl-2 border-l-2 border-cyan-500/50">Avril - Juin 2025</span>
                         <ul class="list-disc list-inside text-gray-400 text-sm space-y-2">
                             <li>Conception d'un syst&egrave;me d'asservissement thermique.</li>
                             <li>Mod&eacute;lisation du moteur sous Matlab/Simulink.</li>
@@ -304,17 +298,20 @@
                     </div>
                 </div>
 
-                <div class="timeline-item left group">
-                    <div class="timeline-dot" style="border-color: #f97316;"></div>
+                <!-- Riester (Orange) -->
+                <div class="timeline-item left group" data-aos="fade-right">
+                    <div class="timeline-dot" style="border-color: #f97316; background-color: #000;"></div>
                     <div class="bg-zinc-900 p-6 rounded-2xl border border-zinc-800 hover:border-orange-500 transition hover:shadow-lg hover:shadow-orange-500/20" onclick="openModal('modal-riester')">
                         <div class="flex items-center justify-end gap-4 mb-4 card-content">
                             <div>
                                 <h3 class="text-lg font-bold text-white text-right group-hover:text-orange-400 transition">Stagiaire M&eacute;canicien</h3>
                                 <p class="text-orange-500 font-medium text-right">Groupe Riester</p>
                             </div>
-                            <img src="images/logo-groupe-riester.jpg" class="w-14 h-14 rounded-lg bg-white p-1 object-contain" alt="Riester" onerror="this.style.display='none'">
+                            <div class="w-14 h-14 bg-white rounded-lg p-1 flex items-center justify-center shrink-0 logo-box">
+                                <img src="images/logo-groupe-riester.jpg" class="w-full h-full object-contain" alt="Riester" onerror="this.style.display='none'">
+                            </div>
                         </div>
-                        <span class="text-xs text-gray-500 font-mono block mb-4 border-l-2 border-orange-500/50 pl-3">Juil - Ao&ucirc;t 2024</span>
+                        <span class="text-xs text-gray-500 font-mono block mb-4 pl-2 border-l-2 border-orange-500/50">Juil - Ao&ucirc;t 2024</span>
                         <ul class="list-disc list-inside text-gray-400 text-sm space-y-2">
                             <li>Diagnostic &eacute;lectronique (Diagbox, Witech).</li>
                             <li>R&eacute;paration v&eacute;hicules hybrides et &eacute;lectriques.</li>
@@ -323,36 +320,42 @@
                     </div>
                 </div>
 
-                <div class="timeline-item right group">
-                    <div class="timeline-dot" style="border-color: #22c55e;"></div>
+                <!-- Leroy Merlin (Vert) -->
+                <div class="timeline-item right group" data-aos="fade-left">
+                    <div class="timeline-dot" style="border-color: #22c55e; background-color: #000;"></div>
                     <div class="bg-zinc-900 p-6 rounded-2xl border border-zinc-800 hover:border-green-500 transition hover:shadow-lg hover:shadow-green-500/20" onclick="openModal('modal-lm')">
                         <div class="flex items-center gap-4 mb-4 card-content">
-                            <img src="images/logo-leroy-merlin.jpg" class="w-14 h-14 rounded-lg bg-white p-1 object-contain" alt="LM" onerror="this.style.display='none'">
+                             <div class="w-14 h-14 bg-white rounded-lg p-1 flex items-center justify-center shrink-0 logo-box">
+                                <img src="images/logo-leroy-merlin.jpg" class="w-full h-full object-contain" alt="LM" onerror="this.style.display='none'">
+                            </div>
                             <div>
                                 <h3 class="text-lg font-bold text-white group-hover:text-green-400 transition">Op&eacute;rateur Logistique</h3>
                                 <p class="text-green-500 font-medium">Leroy Merlin</p>
                             </div>
                         </div>
-                        <span class="text-xs text-gray-500 font-mono block mb-4 border-l-2 border-green-500/50 pl-3">&Eacute;t&eacute; 2024</span>
+                        <span class="text-xs text-gray-500 font-mono block mb-4 pl-2 border-l-2 border-green-500/50">&Eacute;t&eacute; 2024</span>
                         <ul class="list-disc list-inside text-gray-400 text-sm space-y-2">
-                            <li>Pr&eacute;paration de commandes (retrait & exp&eacute;dition).</li>
+                            <li>Pr&eacute;paration de commandes.</li>
                             <li>Gestion des flux de marchandises.</li>
                             <li>Optimisation des stocks.</li>
                         </ul>
                     </div>
                 </div>
 
-                <div class="timeline-item left group">
-                    <div class="timeline-dot" style="border-color: #3b82f6;"></div>
+                <!-- Decathlon (Bleu) -->
+                <div class="timeline-item left group" data-aos="fade-right">
+                    <div class="timeline-dot" style="border-color: #3b82f6; background-color: #000;"></div>
                     <div class="bg-zinc-900 p-6 rounded-2xl border border-zinc-800 hover:border-blue-600 transition hover:shadow-lg hover:shadow-blue-600/20" onclick="openModal('modal-decathlon')">
                         <div class="flex items-center justify-end gap-4 mb-4 card-content">
                             <div>
                                 <h3 class="text-lg font-bold text-white text-right group-hover:text-blue-400 transition">Magasinier</h3>
                                 <p class="text-blue-500 font-medium text-right">D&eacute;cathlon</p>
                             </div>
-                            <img src="images/logo-decathlon.jpg" class="w-14 h-14 rounded-lg bg-white p-1 object-contain" alt="Decathlon" onerror="this.style.display='none'">
+                             <div class="w-14 h-14 bg-white rounded-lg p-1 flex items-center justify-center shrink-0 logo-box">
+                                <img src="images/logo-decathlon.jpg" class="w-full h-full object-contain" alt="Decathlon" onerror="this.style.display='none'">
+                            </div>
                         </div>
-                        <span class="text-xs text-gray-500 font-mono block mb-4 border-l-2 border-blue-600/50 pl-3">Juil 2023 - Jan 2024</span>
+                        <span class="text-xs text-gray-500 font-mono block mb-4 pl-2 border-l-2 border-blue-600/50">Juil 2023 - Jan 2024</span>
                         <ul class="list-disc list-inside text-gray-400 text-sm space-y-2">
                             <li>R&eacute;ception marchandises.</li>
                             <li>Gestion de stock.</li>
@@ -365,101 +368,259 @@
         </div>
     </section>
 
-    <section id="competences" class="py-20 bg-black border-y border-zinc-800">
+    <!-- SECTION 4 : PROJETS ACADÉMIQUES -->
+    <section id="projets" class="py-20 bg-black border-y border-zinc-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-white mb-12 flex items-center gap-2" data-aos="fade-right">
+                <i data-lucide="folder-kanban" class="text-primary w-8 h-8"></i> Projets Acad&eacute;miques
+            </h2>
+
+            <!-- 2EME ANNEE -->
+            <div class="mb-16">
+                <h3 class="text-xl font-bold text-white mb-6 border-l-4 border-primary pl-4" data-aos="fade-up">Projets 2&egrave;me Ann&eacute;e (BUT 2)</h3>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Station Météo -->
+                    <div class="bg-zinc-900/80 backdrop-blur rounded-xl overflow-hidden border border-zinc-800 hover:border-primary/50 hover:shadow-2xl hover:shadow-blue-900/10 transition group flex flex-col duration-300" data-aos="fade-up">
+                        <div class="h-56 bg-zinc-800 relative overflow-hidden">
+                            <img src="images/image_SAE_Lorawan.png" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-500" alt="LoRaWAN" onerror="this.src='https://via.placeholder.com/600x400?text=Projet+LoRaWAN'">
+                            <div class="absolute top-4 right-4 bg-black/70 px-3 py-1 rounded text-xs font-bold text-white border border-white/20">SA&Eacute; 4.02</div>
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col">
+                            <h3 class="text-xl font-bold text-white group-hover:text-primary transition mb-2">Station M&eacute;t&eacute;o IoT LoRaWAN</h3>
+                            <p class="text-gray-400 text-sm mb-4 leading-relaxed">
+                                D&eacute;veloppement complet d'un objet connect&eacute; pour la surveillance environnementale. Acquisition capteur, traitement embarqu&eacute; et transmission radio.
+                            </p>
+                            <div class="mt-auto">
+                                <div class="flex gap-2 flex-wrap mb-4">
+                                    <span class="skill-tag skill-tag-blue">KiCad</span>
+                                    <span class="skill-tag skill-tag-blue">SHT31</span>
+                                    <span class="skill-tag skill-tag-blue">LoRa</span>
+                                </div>
+                                <button class="w-full py-2 bg-blue-600/20 text-blue-300 border border-blue-600/50 rounded hover:bg-blue-600 hover:text-white transition flex items-center justify-center gap-2" onclick="openModal('modal-lora')">
+                                    <i data-lucide="eye" class="w-4 h-4"></i> D&eacute;tails Techniques
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1ERE ANNEE -->
+            <div>
+                <h3 class="text-xl font-bold text-white mb-6 border-l-4 border-accent pl-4" data-aos="fade-up">Projets 1&egrave;re Ann&eacute;e (BUT 1)</h3>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Oscilloscope -->
+                    <div class="bg-zinc-900/80 backdrop-blur rounded-xl overflow-hidden border border-zinc-800 hover:border-green-500/50 hover:shadow-2xl transition group flex flex-col duration-300" data-aos="fade-up">
+                        <div class="h-56 bg-zinc-800 relative overflow-hidden">
+                            <img src="images/image-PID-Proteus.png" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-500" alt="Oscillo" onerror="this.src='https://via.placeholder.com/600x400?text=Projet+Oscillo'">
+                            <div class="absolute top-4 right-4 bg-black/70 px-3 py-1 rounded text-xs font-bold text-white border border-white/20">SA&Eacute; 3.01</div>
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col">
+                            <h3 class="text-xl font-bold text-white group-hover:text-green-400 transition mb-2">Oscilloscope Num&eacute;rique</h3>
+                            <p class="text-gray-400 text-sm mb-4 leading-relaxed">
+                                Conception d'un syst&egrave;me d'acquisition de signaux. &Eacute;tage analogique complet (AOP, protection) et num&eacute;risation sur STM32.
+                            </p>
+                            <div class="mt-auto">
+                                <div class="flex gap-2 flex-wrap mb-4">
+                                    <span class="skill-tag skill-tag-blue">Proteus</span>
+                                    <span class="skill-tag skill-tag-blue">AOP</span>
+                                    <span class="skill-tag skill-tag-blue">C</span>
+                                </div>
+                                <button class="w-full py-2 bg-green-900/30 text-green-300 border border-green-800 rounded-lg hover:bg-green-800/50 transition text-sm font-medium flex items-center justify-center gap-2" onclick="openModal('modal-oscillo')">
+                                    <i data-lucide="eye" class="w-4 h-4"></i> D&eacute;tails Techniques
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Robot -->
+                    <div class="bg-zinc-900/80 backdrop-blur rounded-xl overflow-hidden border border-zinc-800 hover:border-orange-500/50 hover:shadow-2xl transition group flex flex-col duration-300" data-aos="fade-up">
+                        <div class="h-56 bg-zinc-800 relative overflow-hidden flex items-center justify-center">
+                             <i data-lucide="bot" class="w-20 h-20 text-zinc-600 group-hover:text-orange-500 transition transform group-hover:scale-110"></i>
+                             <div class="absolute top-4 right-4 bg-black/70 px-3 py-1 rounded text-xs font-bold text-white border border-white/20">SA&Eacute; 2.01</div>
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col">
+                            <h3 class="text-xl font-bold text-white group-hover:text-orange-400 transition mb-2">Robot Mobile Autonome</h3>
+                            <p class="text-gray-400 text-sm mb-4">Conception d'un robot &eacute;viteur d'obstacles. Programmation Arduino et int&eacute;gration des capteurs.</p>
+                            <div class="mt-auto">
+                                <div class="flex gap-2 flex-wrap mb-4">
+                                    <span class="skill-tag skill-tag-yellow">Arduino</span>
+                                    <span class="skill-tag skill-tag-yellow">C++</span>
+                                </div>
+                                <button class="w-full py-2 bg-orange-900/30 text-orange-300 border border-orange-800 rounded-lg hover:bg-orange-800/50 transition text-sm font-medium flex items-center justify-center gap-2">
+                                    <i data-lucide="eye" class="w-4 h-4"></i> D&eacute;tails Techniques
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5 : LANGUES -->
+    <section id="langues" class="py-20 border-t border-zinc-800 bg-zinc-900/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold text-white mb-16 flex items-center justify-center gap-3">
+                <i data-lucide="languages" class="text-primary w-8 h-8"></i> Langues Ma&icirc;tris&eacute;es
+            </h2>
+            <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                <div class="flex items-center gap-4 bg-black/50 px-5 py-4 rounded-xl border border-zinc-800 hover:border-blue-500 transition hover:-translate-y-1">
+                    <img src="https://flagcdn.com/w80/fr.png" alt="France" class="w-12 h-auto rounded shadow-sm">
+                    <div class="text-left">
+                        <div class="font-bold text-white text-lg">Fran&ccedil;ais</div>
+                        <div class="text-sm text-gray-400">Langue maternelle</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 bg-black/50 px-5 py-4 rounded-xl border border-zinc-800 hover:border-blue-500 transition hover:-translate-y-1">
+                    <img src="https://flagcdn.com/w80/gb.png" alt="UK" class="w-12 h-auto rounded shadow-sm">
+                    <div class="text-left">
+                        <div class="font-bold text-white text-lg">Anglais</div>
+                        <div class="text-sm text-gray-400">B2 Professionnel</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 bg-black/50 px-5 py-4 rounded-xl border border-zinc-800 hover:border-blue-500 transition hover:-translate-y-1">
+                    <img src="https://flagcdn.com/w80/es.png" alt="Spain" class="w-12 h-auto rounded shadow-sm">
+                    <div class="text-left">
+                        <div class="font-bold text-white text-lg">Espagnol</div>
+                        <div class="text-sm text-gray-400">B1 Interm&eacute;diaire</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6 : COMPETENCES (ETIQUETTES LUMINEUSES) -->
+    <section id="competences" class="py-20 border-y border-zinc-800 bg-black/40">
         <div class="max-w-7xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-white mb-16 text-center">Comp&eacute;tences Techniques</h2>
+            <h2 class="text-4xl font-bold text-white mb-16 text-center flex items-center justify-center gap-3">
+                <i data-lucide="boxes" class="text-primary w-10 h-10"></i> Comp&eacute;tences Techniques
+            </h2>
             <div class="grid md:grid-cols-2 gap-8">
-                <div class="bg-zinc-900/50 p-8 rounded-2xl border border-zinc-800 hover:border-blue-500 transition duration-500 group">
+                <!-- Carte 1 -->
+                <div class="bg-zinc-900/50 backdrop-blur p-8 rounded-2xl border border-zinc-800 hover:border-blue-500 transition duration-500">
                     <div class="flex items-center gap-4 mb-6">
                         <div class="p-3 bg-blue-500/10 rounded-lg"><i data-lucide="cpu" class="w-8 h-8 text-blue-400"></i></div>
                         <h3 class="text-2xl font-bold text-white">&Eacute;lectronique & Outils</h3>
                     </div>
-                    <div class="flex flex-wrap gap-3">
-                        <span class="tech-badge">KiCad</span><span class="tech-badge">Amplificateurs</span><span class="tech-badge">Filtres</span><span class="tech-badge">CAN</span><span class="tech-badge">STM32</span>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag skill-tag-blue">KiCad (PCB)</span>
+                        <span class="skill-tag skill-tag-blue">Amplificateurs</span>
+                        <span class="skill-tag skill-tag-blue">Filtres</span>
+                        <span class="skill-tag skill-tag-blue">CAN / CNA</span>
+                        <span class="skill-tag skill-tag-blue">STM32</span>
                     </div>
                 </div>
-                <div class="bg-zinc-900/50 p-8 rounded-2xl border border-zinc-800 hover:border-purple-500 transition duration-500 group">
+                <!-- Carte 2 -->
+                <div class="bg-zinc-900/50 backdrop-blur p-8 rounded-2xl border border-zinc-800 hover:border-purple-500 transition duration-500">
                     <div class="flex items-center gap-4 mb-6">
                         <div class="p-3 bg-purple-500/10 rounded-lg"><i data-lucide="code-2" class="w-8 h-8 text-purple-400"></i></div>
                         <h3 class="text-2xl font-bold text-white">Soft & Simulation</h3>
                     </div>
-                    <div class="flex flex-wrap gap-3">
-                        <span class="tech-badge">Matlab</span><span class="tech-badge">Simulink</span><span class="tech-badge">Proteus</span><span class="tech-badge">Scilab</span><span class="tech-badge">C/C++</span>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag skill-tag-purple">Matlab</span>
+                        <span class="skill-tag skill-tag-purple">Simulink</span>
+                        <span class="skill-tag skill-tag-purple">Proteus</span>
+                        <span class="skill-tag skill-tag-purple">Scilab</span>
+                        <span class="skill-tag skill-tag-purple">Langage C</span>
                     </div>
                 </div>
-                <div class="bg-zinc-900/50 p-8 rounded-2xl border border-zinc-800 hover:border-yellow-500 transition duration-500 group">
+                <!-- Carte 3 -->
+                <div class="bg-zinc-900/50 backdrop-blur p-8 rounded-2xl border border-zinc-800 hover:border-yellow-500 transition duration-500">
                     <div class="flex items-center gap-4 mb-6">
                         <div class="p-3 bg-yellow-500/10 rounded-lg"><i data-lucide="zap" class="w-8 h-8 text-yellow-400"></i></div>
                         <h3 class="text-2xl font-bold text-white">&Eacute;nergie & Auto</h3>
                     </div>
-                    <div class="flex flex-wrap gap-3">
-                        <span class="tech-badge">Triphas&eacute;</span><span class="tech-badge">Habilitation</span><span class="tech-badge">PID</span><span class="tech-badge">LoRaWAN</span>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag skill-tag-yellow">Triphas&eacute;</span>
+                        <span class="skill-tag skill-tag-yellow">Habilitation</span>
+                        <span class="skill-tag skill-tag-yellow">R&eacute;gulation PID</span>
+                        <span class="skill-tag skill-tag-yellow">Magn&eacute;tisme</span>
+                        <span class="skill-tag skill-tag-yellow">LoRaWAN</span>
                     </div>
                 </div>
-                <div class="bg-zinc-900/50 p-8 rounded-2xl border border-zinc-800 hover:border-red-500 transition duration-500 group">
+                <!-- Carte 4 -->
+                <div class="bg-zinc-900/50 backdrop-blur p-8 rounded-2xl border border-zinc-800 hover:border-red-500 transition duration-500">
                     <div class="flex items-center gap-4 mb-6">
                         <div class="p-3 bg-red-500/10 rounded-lg"><i data-lucide="wrench" class="w-8 h-8 text-red-400"></i></div>
                         <h3 class="text-2xl font-bold text-white">M&eacute;canique</h3>
                     </div>
-                    <div class="flex flex-wrap gap-3">
-                        <span class="tech-badge">Diagnostic</span><span class="tech-badge">Vidange</span><span class="tech-badge">Valise Diag</span><span class="tech-badge">Hybride</span>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag skill-tag-red">Diagnostic</span>
+                        <span class="skill-tag skill-tag-red">Vidange</span>
+                        <span class="skill-tag skill-tag-red">Valise Diag</span>
+                        <span class="skill-tag skill-tag-red">Hybride</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="contact" class="py-20 bg-black border-t border-zinc-800">
+    <!-- CONTACT -->
+    <section id="contact" class="py-20 border-t border-zinc-800 bg-black/40">
         <div class="max-w-6xl mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold text-white mb-8">Me Contacter</h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                <a href="mailto:mertenswahil@gmail.com" class="p-6 bg-zinc-900 rounded-xl hover:bg-zinc-800 transition flex flex-col items-center gap-3 border border-zinc-800 hover:border-primary/50 group">
-                    <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary/20 transition">
-                        <i data-lucide="mail" class="text-primary w-6 h-6"></i>
+            
+            <div class="mb-20">
+                <h2 class="text-3xl font-bold text-white mb-12 flex items-center justify-center gap-3"><i data-lucide="heart" class="text-primary"></i> Centres d'Int&eacute;r&ecirc;t</h2>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-zinc-900 p-8 rounded-3xl border border-white/5 hover:bg-zinc-800 transition duration-300 hover:-translate-y-2">
+                        <div class="text-5xl mb-4">⚽</div><h3 class="text-xl font-bold text-white">Football</h3>
                     </div>
+                    <div class="bg-zinc-900 p-8 rounded-3xl border border-white/5 hover:bg-zinc-800 transition duration-300 hover:-translate-y-2">
+                        <div class="text-5xl mb-4">🚴</div><h3 class="text-xl font-bold text-white">Cyclisme</h3>
+                    </div>
+                    <div class="bg-zinc-900 p-8 rounded-3xl border border-white/5 hover:bg-zinc-800 transition duration-300 hover:-translate-y-2">
+                        <div class="text-5xl mb-4">🏊</div><h3 class="text-xl font-bold text-white">Natation</h3>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="text-3xl font-bold text-white mb-8">Me Contacter</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">
+                <a href="mailto:mertenswahil@gmail.com" class="p-6 bg-zinc-900 rounded-xl hover:bg-zinc-800 transition flex flex-col items-center gap-3 border border-zinc-800 hover:border-primary/50 group">
+                    <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary/20 transition"><i data-lucide="mail" class="text-primary w-6 h-6"></i></div>
                     <span class="text-gray-300 text-sm break-all font-medium group-hover:text-white transition">Email</span>
                 </a>
-                
                 <a href="https://www.linkedin.com/in/wahil-mertens-a90726270" target="_blank" class="p-6 bg-zinc-900 rounded-xl hover:bg-zinc-800 transition flex flex-col items-center gap-3 border border-zinc-800 hover:border-blue-400/50 group">
-                    <div class="w-12 h-12 bg-blue-500/10 rounded-full flex items-center justify-center group-hover:bg-blue-500/20 transition">
-                        <i data-lucide="linkedin" class="text-blue-500 w-6 h-6"></i>
-                    </div>
+                    <div class="w-12 h-12 bg-blue-500/10 rounded-full flex items-center justify-center group-hover:bg-blue-500/20 transition"><i data-lucide="linkedin" class="text-blue-500 w-6 h-6"></i></div>
                     <span class="text-gray-300 text-sm font-medium group-hover:text-white transition">LinkedIn</span>
                 </a>
-
                 <a href="tel:+33768317163" class="p-6 bg-zinc-900 rounded-xl hover:bg-zinc-800 transition flex flex-col items-center gap-3 border border-zinc-800 hover:border-accent/50 group">
-                    <div class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center group-hover:bg-accent/20 transition">
-                        <i data-lucide="phone" class="text-accent w-6 h-6"></i>
-                    </div>
+                    <div class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center group-hover:bg-accent/20 transition"><i data-lucide="phone" class="text-accent w-6 h-6"></i></div>
                     <span class="text-gray-300 text-sm font-medium group-hover:text-white transition">07 68 31 71 63</span>
                 </a>
-
-                <div class="p-6 bg-zinc-900 rounded-xl flex flex-col items-center gap-3 border border-zinc-800">
-                    <div class="w-12 h-12 bg-zinc-800 rounded-full flex items-center justify-center">
-                        <i data-lucide="map-pin" class="text-gray-400 w-6 h-6"></i>
-                    </div>
-                    <span class="text-gray-300 text-sm font-medium">Paris, France</span>
-                </div>
             </div>
             
-            <p class="text-gray-600 text-sm">
-                &copy; 2025 Wahil Mertens.
-            </p>
+            <p class="text-gray-600 text-sm">&copy; 2025 Wahil Mertens.</p>
         </div>
     </section>
 
-    <div id="modal-lora" class="modal"><div class="bg-zinc-900 rounded-xl w-full max-w-4xl p-6 flex flex-col md:flex-row gap-6 relative modal-content"><button class="absolute top-4 right-4 text-white" onclick="closeModal('modal-lora')"><i data-lucide="x"></i></button><div class="w-full md:w-1/2"><img src="images/image_SAE_Lorawan.png" class="rounded-lg w-full h-64 object-cover" onerror="this.src='https://via.placeholder.com/600x400'"></div><div class="w-full md:w-1/2"><h2 class="text-2xl font-bold text-white mb-2">Station IoT LoRaWAN</h2><p class="text-blue-400 text-sm mb-4">Projet S4</p><ul class="list-disc list-inside text-gray-300 space-y-2"><li>Capteur SHT31 (T�/Hum).</li><li>Microcontr&ocirc;leur STM32.</li><li>Communication LoRaWAN.</li><li>Dashboard Tago.io.</li></ul></div></div></div>
+    <!-- MODALES -->
+    <div id="modal-lora" class="modal"><div class="bg-zinc-900 rounded-xl w-full max-w-4xl p-6 flex flex-col md:flex-row gap-6 relative modal-content"><button class="absolute top-4 right-4 text-white" onclick="closeModal('modal-lora')"><i data-lucide="x"></i></button><div class="w-full md:w-1/2"><img src="images/image_SAE_Lorawan.png" class="rounded-lg w-full h-64 object-cover" onerror="this.src='https://via.placeholder.com/600x400'"></div><div class="w-full md:w-1/2"><h2 class="text-2xl font-bold text-white mb-2">Station IoT LoRaWAN</h2><p class="text-blue-400 text-sm mb-4">Projet S4</p><ul class="list-disc list-inside text-gray-300 space-y-2"><li>Capteur SHT31 (T°/Hum).</li><li>Microcontr&ocirc;leur STM32.</li><li>Communication LoRaWAN.</li><li>Dashboard Tago.io.</li></ul></div></div></div>
     <div id="modal-oscillo" class="modal"><div class="bg-zinc-900 rounded-xl w-full max-w-3xl p-6 relative modal-content"><button class="absolute top-4 right-4 text-white" onclick="closeModal('modal-oscillo')"><i data-lucide="x"></i></button><h2 class="text-2xl font-bold text-white mb-4">Oscilloscope Num&eacute;rique</h2><p class="text-gray-300 mb-4">Conception d'un instrument de mesure complet.</p><img src="images/image-PID-Proteus.png" class="w-full rounded-lg" onerror="this.src='https://via.placeholder.com/600'"></div></div>
     <div id="modal-ipn-stage" class="modal"><div class="bg-zinc-900 rounded-xl w-full max-w-3xl p-6 relative modal-content"><button class="absolute top-4 right-4 text-white" onclick="closeModal('modal-ipn-stage')"><i data-lucide="x"></i></button><h2 class="text-2xl font-bold text-white mb-4">Stage IPN - R&eacute;gulation</h2><p class="text-gray-300">Mod&eacute;lisation thermique et contr&ocirc;le PID.</p><img src="images/image-PID-Proteus.png" class="w-full rounded-lg mt-4" onerror="this.src='https://via.placeholder.com/600'"></div></div>
-    <div id="modal-riester" class="modal"><div class="bg-zinc-900 rounded-xl w-full max-w-3xl p-6 relative modal-content"><button class="absolute top-4 right-4 text-white" onclick="closeModal('modal-riester')"><i data-lucide="x"></i></button><h2 class="text-2xl font-bold text-white mb-4">Maintenance Auto</h2><p class="text-gray-300">Diagnostic �lectronique et haute tension.</p><div class="grid grid-cols-2 gap-4 mt-4"><img src="images/image-garage-groupe-reister.jpg" class="rounded border border-white/10"><img src="images/image-moteur-electrique.jpg" class="rounded border border-white/10"></div></div></div>
-    <div id="modal-lm" class="modal"><div class="bg-zinc-900 rounded-xl w-full max-w-2xl p-6 relative modal-content"><button class="absolute top-4 right-4 text-white" onclick="closeModal('modal-lm')"><i data-lucide="x"></i></button><h2 class="text-2xl font-bold text-white mb-4">Op�rateur Logistique</h2><p class="text-gray-300">Gestion des flux et commandes chez Leroy Merlin.</p></div></div>
-    <div id="modal-decathlon" class="modal"><div class="bg-zinc-900 rounded-xl w-full max-w-2xl p-6 relative modal-content"><button class="absolute top-4 right-4 text-white" onclick="closeModal('modal-decathlon')"><i data-lucide="x"></i></button><h2 class="text-2xl font-bold text-white mb-4">Magasinier</h2><p class="text-gray-300">Gestion de stock chez D�cathlon.</p></div></div>
+    <div id="modal-riester" class="modal"><div class="bg-zinc-900 rounded-xl w-full max-w-3xl p-6 relative modal-content"><button class="absolute top-4 right-4 text-white" onclick="closeModal('modal-riester')"><i data-lucide="x"></i></button><h2 class="text-2xl font-bold text-white mb-4">Maintenance Auto</h2><p class="text-gray-300">Diagnostic électronique et haute tension.</p><div class="grid grid-cols-2 gap-4 mt-4"><img src="images/image-garage-groupe-reister.jpg" class="rounded border border-white/10"><img src="images/image-moteur-electrique.jpg" class="rounded border border-white/10"></div></div></div>
+    <div id="modal-lm" class="modal"><div class="bg-zinc-900 rounded-xl w-full max-w-2xl p-6 relative modal-content"><button class="absolute top-4 right-4 text-white" onclick="closeModal('modal-lm')"><i data-lucide="x"></i></button><h2 class="text-2xl font-bold text-white mb-4">Opérateur Logistique</h2><p class="text-gray-300">Gestion des flux et commandes chez Leroy Merlin.</p></div></div>
+    <div id="modal-decathlon" class="modal"><div class="bg-zinc-900 rounded-xl w-full max-w-2xl p-6 relative modal-content"><button class="absolute top-4 right-4 text-white" onclick="closeModal('modal-decathlon')"><i data-lucide="x"></i></button><h2 class="text-2xl font-bold text-white mb-4">Magasinier</h2><p class="text-gray-300">Gestion de stock chez Décathlon.</p></div></div>
 
+    <!-- Script AOS chargé AVANT l'init -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         lucide.createIcons();
         function openModal(id) { const m = document.getElementById(id); m.classList.remove('hidden'); m.style.display='flex'; setTimeout(() => m.classList.add('active'), 10); document.body.style.overflow = 'hidden'; }
         function closeModal(id) { const m = document.getElementById(id); m.classList.remove('active'); setTimeout(() => { m.style.display='none'; m.classList.add('hidden'); }, 300); document.body.style.overflow = 'auto'; }
         document.querySelectorAll('.modal').forEach(m => { m.addEventListener('click', e => { if(e.target === m) closeModal(m.id); }); });
+        
+        // Accordion Logic (Scolarité)
+        function toggleSection(id, iconId) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById(iconId);
+            content.classList.toggle('open');
+            icon.classList.toggle('rotate-180');
+        }
+        
+        // AOS
+        AOS.init();
     </script>
 </body>
 </html>
